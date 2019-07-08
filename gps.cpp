@@ -1,26 +1,24 @@
 #include <Arduino.h>
 #include <TinyGPS.h>
 #include <SoftwareSerial.h>
+#include "datetime.h"
 #include "gps.h"
 
 TinyGPS gps;
-SoftwareSerial ss(4, 3); // Arduino RX, TX to conenct GPS
-s_date latestDate;
-unsigned long latestMillis;
-bool hasFallbackTime = false;
+SoftwareSerial gpsSerial(4, 3); // Arduino RX, TX to conenct GPS
 
 void gps_setup()
 {
-    ss.begin(9600);
+    gpsSerial.begin(9600);
 }
 
-bool readFromSerial()
+bool _read_from_serial()
 {
     for (unsigned long start = millis(); millis() - start < 1000;)
     {
-        while (ss.available())
+        while (gpsSerial.available())
         {
-            char c = ss.read();
+            char c = gpsSerial.read();
             // Serial.write(c); // uncomment this line if you want to see the GPS data flowing
             if (gps.encode(c)) // Did a new valid sentence come in?
                 return true;
@@ -30,78 +28,47 @@ bool readFromSerial()
     return false;
 }
 
-bool readGPSDateTime2(s_date *date)
+bool gps_read_date(s_date *date)
 {
     unsigned long age;
-    byte hundredths;
+    byte hour, minute, second, hundredth;
 
-    gps.crack_datetime(&date->year, &date->month, &date->day, &date->hour, &date->minute, &date->second, &hundredths, &age);
+    _read_from_serial();
 
-#ifdef DEBUG
-    Serial.print("HOUR=");
-    Serial.print(date->hour);
-    Serial.print(" MINUTE=");
-    Serial.print(date->minute);
-    Serial.print(" SECOND=");
-    Serial.println(date->second);
-#endif
-
-    if (age != TinyGPS::GPS_INVALID_AGE) {
-        latestDate = *date;
-        latestMillis = millis();
-        hasFallbackTime = true;
-    }
+    gps.crack_datetime(&date->year, &date->month, &date->day, &hour, &minute, &second, &hundredth, &age);
 
     return age != TinyGPS::GPS_INVALID_AGE;
 }
 
-bool readGPSDateTime(s_date *date)
+bool gps_read_time(s_time *time)
 {
-    readFromSerial();
+    unsigned long age;
+    int year;
+    byte month, day, hundredths;
 
-    return readGPSDateTime2(date);
-}
+    _read_from_serial();
 
-bool getFallbackTime(s_date *date) {
-    unsigned long currentMillis = millis();
-    unsigned long diff;
-
-    if (!hasFallbackTime) {
-        return false;
-    }
-
-    if (currentMillis < latestMillis) {
-        //overflow occurred
-
-        diff = (sizeof(unsigned long) + currentMillis) - latestMillis;
-    } else {
-        diff = currentMillis - latestMillis;
-    }
-
-    diff /= 1000;
-
-    date->hour = (latestDate.hour + (diff / 60 / 60)) % 24;
-    date->minute = (latestDate.minute + (diff / 60)) % 60;
-    date->second = (latestDate.second + diff) % 60;
+    gps.crack_datetime(&year, &month, &day, &time->hour, &time->minute, &time->second, &hundredths, &age);
 
 #ifdef DEBUG
-    Serial.print("FALLBACK HOUR=");
-    Serial.print(date->hour);
+    Serial.print("HOUR=");
+    Serial.print(time->hour);
     Serial.print(" MINUTE=");
-    Serial.print(date->minute);
+    Serial.print(time->minute);
     Serial.print(" SECOND=");
-    Serial.println(date->second);
+    Serial.println(time->second);
 #endif
 
-    return true;
+    return age != TinyGPS::GPS_INVALID_AGE;
 }
 
-bool readGPS(s_coords *coords, s_date *date)
+
+bool gps_read_coords(s_coords *coords)
 {
     float flat, flon;
     unsigned long age;
 
-    readFromSerial();
+    _read_from_serial();
 
     gps.f_get_position(&flat, &flon, &age);
 
@@ -122,18 +89,18 @@ bool readGPS(s_coords *coords, s_date *date)
     coords->latitude = flat;
     coords->longitude = flon;
 
-    return readGPSDateTime2(date);
+    return true;
 }
 
-void smartdelay(unsigned long ms)
+void gps_delay(unsigned long ms)
 {
     unsigned long start = millis();
 
     do
     {
-        while (ss.available())
+        while (gpsSerial.available())
         {
-            gps.encode(ss.read());
+            gps.encode(gpsSerial.read());
         }
     } while (millis() - start < ms);
 }
@@ -147,9 +114,9 @@ void gps_debug_loop()
     // For one second we parse GPS data and report some key values
     for (unsigned long start = millis(); millis() - start < 1000;)
     {
-        while (ss.available())
+        while (gpsSerial.available())
         {
-            char c = ss.read();
+            char c = gpsSerial.read();
             // Serial.write(c); // uncomment this line if you want to see the GPS data flowing
             if (gps.encode(c)) // Did a new valid sentence come in?
                 newData = true;

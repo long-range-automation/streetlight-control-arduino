@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "debug.h"
 #include "relay.h"
-#include "gps.h"
+#include "datetime.h"
 #include "streetlight-control.h"
 
 const int RELAY_PINS[] = {RELAY0_PIN, RELAY1_PIN, RELAY2_PIN, RELAY3_PIN};
@@ -38,7 +38,7 @@ uint8_t getRelayMode(uint8_t modes, short number)
     return (modes >> (2 * number)) & 0x3;
 }
 
-uint8_t timeToByte(s_date input)
+uint8_t timeToByte(s_time input)
 {
     return ((input.hour % 24) * 10) + (int(input.minute / 6));
 }
@@ -52,24 +52,13 @@ bool isInRange(uint8_t start, uint8_t ende, uint8_t value)
 
 void checkAutomation()
 {
-    s_date date;
-    bool isValid = readGPSDateTime(&date);
+    s_time time;
 
-    if (!isValid)
-    {
-        LOG_MSG("Found no valid GPS time. Try fallback.");
-
-        isValid = getFallbackTime(&date);
-    }
-
-    if (!isValid)
-    {
-        LOG_MSG("I have no valid time. Abort automation.");
-
+    if (!time_get(&time)) {
         return;
     }
 
-    uint8_t timeByte = timeToByte(date);
+    uint8_t timeByte = timeToByte(time);
     bool isInOnRange = false;
 
     if (global_config.timeOn != global_config.timeOff)

@@ -1,12 +1,4 @@
-typedef struct
-{
-    int year;
-    byte month;
-    byte day;
-    byte hour;
-    byte minute;
-    byte second;
-} s_date;
+#include "datetime.h"
 
 typedef struct
 {
@@ -15,8 +7,8 @@ typedef struct
 } s_coords;
 
 void gps_setup();
-bool readGPSDateTime(s_date *date);
-bool readGPS(s_coords *coords, s_date *date);
-bool getFallbackTime(s_date *date);
-void smartdelay(unsigned long ms);
+bool gps_read_date(s_date *date);
+bool gps_read_time(s_time *time);
+bool gps_read_coords(s_coords *coords);
+void gps_delay(unsigned long ms);
 void gps_debug_loop();

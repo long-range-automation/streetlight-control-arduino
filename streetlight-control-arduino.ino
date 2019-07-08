@@ -5,9 +5,6 @@
 #include "gps.h"
 #include "streetlight-control.h"
 
-#define DEFAULT_LATITUDE 47.63249
-#define DEFAULT_LONGITUDE 9.52935
-
 s_configuration global_config = {
     .relayModes = 0,
     .timeOn = 0xff,

@@ -3,14 +3,15 @@
 #include "relay.h"
 #include "lora.h"
 #include "message.h"
+#include "datetime.h"
 #include "streetlight-control.h"
 
 bool packHeartbeatMessage(uint8_t *data)
 {
     s_coords coords;
-    s_date date;
-    bool hasGPSSignal = readGPS(&coords, &date);
-    bool hasValidTime = hasGPSSignal ? true : getFallbackTime(&date);
+    s_time time;
+    bool hasGPSSignal = gps_read_coords(&coords);
+    bool hasValidTime = time_get(&time);
 
     int maintenanceMode = 0;
     int gpsSignal = hasGPSSignal ? 1 << 6 : 0;
@@ -18,8 +19,8 @@ bool packHeartbeatMessage(uint8_t *data)
 
     data[0] = (PROTOCOL_VERSION << 4) + HEARTBEAT_TYPE;
     data[1] = global_config.timeOn ^ global_config.timeOff ^ global_config.outageOn ^ global_config.outageOff; // checksum
-    data[2] = hasValidTime ? date.hour : 0xff; // hour
-    data[3] = hasValidTime ? date.minute : 0xff; // minute
+    data[2] = hasValidTime ? time.hour : 0xff; // hour
+    data[3] = hasValidTime ? time.minute : 0xff; // minute
     data[4] = (TX_INTERVAL / 60);
     data[5] = maintenanceMode + gpsSignal + relayStates;
     data[6] = global_config.relayModes;
