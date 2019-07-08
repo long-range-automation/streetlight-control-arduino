@@ -57,6 +57,15 @@ void checkAutomation()
 
     if (!isValid)
     {
+        LOG_MSG("Found no valid GPS time. Try fallback.");
+
+        isValid = getFallbackTime(&date);
+    }
+
+    if (!isValid)
+    {
+        LOG_MSG("I have no valid time. Abort automation.");
+
         return;
     }
 

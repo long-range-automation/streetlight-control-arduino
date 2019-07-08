@@ -135,12 +135,6 @@ void onTXComplete()
 
 void onEvent(ev_t ev)
 {
-    Serial.print(F("##### "));
-    Serial.println(digitalRead(A0));
-
-    Serial.print(os_getTime());
-    Serial.print(": ");
-
     switch (ev)
     {
     case EV_TXCOMPLETE:

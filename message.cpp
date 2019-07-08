@@ -10,18 +10,19 @@ bool packHeartbeatMessage(uint8_t *data)
     s_coords coords;
     s_date date;
     bool hasGPSSignal = readGPS(&coords, &date);
+    bool hasValidTime = hasGPSSignal ? true : getFallbackTime(&date);
 
     int maintenanceMode = 0;
     int gpsSignal = hasGPSSignal ? 1 << 6 : 0;
     int relayStates = getRelayState(0) + (getRelayState(1) << 1) + (getRelayState(2) << 2) + (getRelayState(3) << 3);
 
     data[0] = (PROTOCOL_VERSION << 4) + HEARTBEAT_TYPE;
-    data[1] = 0; // checksum
-    data[2] = 0; // hour
-    data[3] = 0; // minute
+    data[1] = global_config.timeOn ^ global_config.timeOff ^ global_config.outageOn ^ global_config.outageOff; // checksum
+    data[2] = hasValidTime ? date.hour : 0xff; // hour
+    data[3] = hasValidTime ? date.minute : 0xff; // minute
     data[4] = (TX_INTERVAL / 60);
     data[5] = maintenanceMode + gpsSignal + relayStates;
-    data[6] = 0;
+    data[6] = global_config.relayModes;
 }
 
 void packGPSCoordinates(float latitude, float longitude, uint8_t *data)

@@ -6,8 +6,8 @@
 #define HEARTBEAT_LENGTH 7
 #define CONFIGURATION_LENGTH 6
 
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#ifndef __message_h__
+#define __message_h__
 typedef struct
 {
     uint8_t relayModes;

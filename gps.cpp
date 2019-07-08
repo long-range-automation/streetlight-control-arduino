@@ -5,6 +5,9 @@
 
 TinyGPS gps;
 SoftwareSerial ss(4, 3); // Arduino RX, TX to conenct GPS
+s_date latestDate;
+unsigned long latestMillis;
+bool hasFallbackTime = false;
 
 void gps_setup()
 {
@@ -34,6 +37,21 @@ bool readGPSDateTime2(s_date *date)
 
     gps.crack_datetime(&date->year, &date->month, &date->day, &date->hour, &date->minute, &date->second, &hundredths, &age);
 
+#ifdef DEBUG
+    Serial.print("HOUR=");
+    Serial.print(date->hour);
+    Serial.print(" MINUTE=");
+    Serial.print(date->minute);
+    Serial.print(" SECOND=");
+    Serial.println(date->second);
+#endif
+
+    if (age != TinyGPS::GPS_INVALID_AGE) {
+        latestDate = *date;
+        latestMillis = millis();
+        hasFallbackTime = true;
+    }
+
     return age != TinyGPS::GPS_INVALID_AGE;
 }
 
@@ -42,6 +60,40 @@ bool readGPSDateTime(s_date *date)
     readFromSerial();
 
     return readGPSDateTime2(date);
+}
+
+bool getFallbackTime(s_date *date) {
+    unsigned long currentMillis = millis();
+    unsigned long diff;
+
+    if (!hasFallbackTime) {
+        return false;
+    }
+
+    if (currentMillis < latestMillis) {
+        //overflow occurred
+
+        diff = (sizeof(unsigned long) + currentMillis) - latestMillis;
+    } else {
+        diff = currentMillis - latestMillis;
+    }
+
+    diff /= 1000;
+
+    date->hour = (latestDate.hour + (diff / 60 / 60)) % 24;
+    date->minute = (latestDate.minute + (diff / 60)) % 60;
+    date->second = (latestDate.second + diff) % 60;
+
+#ifdef DEBUG
+    Serial.print("FALLBACK HOUR=");
+    Serial.print(date->hour);
+    Serial.print(" MINUTE=");
+    Serial.print(date->minute);
+    Serial.print(" SECOND=");
+    Serial.println(date->second);
+#endif
+
+    return true;
 }
 
 bool readGPS(s_coords *coords, s_date *date)
