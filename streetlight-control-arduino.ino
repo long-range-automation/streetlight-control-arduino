@@ -2,6 +2,7 @@
 #include "lora.h"
 #include "debug.h"
 #include "message.h"
+#include "gps.h"
 #include "streetlight-control.h"
 
 #define DEFAULT_LATITUDE 47.63249
@@ -20,6 +21,8 @@ void setup()
   debug_setup();
 
   LOG_MSG("Starting... [otaa-gps-device]");
+
+  gps_setup();
 
   relay_setup();
 

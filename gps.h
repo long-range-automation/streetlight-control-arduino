@@ -14,6 +14,8 @@ typedef struct
     float latitude;
 } s_coords;
 
+void gps_setup();
 bool readGPSDateTime(s_date *date);
 bool readGPS(s_coords *coords, s_date *date);
 void smartdelay(unsigned long ms);
+void gps_debug_loop();
