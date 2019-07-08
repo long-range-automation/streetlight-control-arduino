@@ -10,10 +10,10 @@
 
 s_configuration global_config = {
     .relayModes = 0,
-    .timeOn = 0,
-    .timeOff = 0,
-    .outageOn = 0,
-    .outageOff = 0,
+    .timeOn = 0xff,
+    .timeOff = 0xff,
+    .outageOn = 0xff,
+    .outageOff = 0xff,
 };
 
 void setup()
