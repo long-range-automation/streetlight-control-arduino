@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "relay.h"
 #include "lora.h"
+#include "automation.h"
 #include "streetlight-control.h"
 
 // This EUI must be in little-endian format, so least-significant-byte
