@@ -8,7 +8,7 @@ const int RELAY_PINS[] = {RELAY0_PIN, RELAY1_PIN, RELAY2_PIN, RELAY3_PIN};
 
 void relay_setup()
 {
-    for (int i = 0; i < sizeof(RELAY_PINS); i++)
+    for (unsigned int i = 0; i < (sizeof(RELAY_PINS) / sizeof(int)); i++)
     {
         pinMode(RELAY_PINS[i], OUTPUT);
     }
@@ -46,7 +46,7 @@ uint8_t timeToByte(s_time input)
 bool isInRange(uint8_t start, uint8_t ende, uint8_t value)
 {
     return (value > start && value <= MAX_TIME_BYTE && ende < start) ||
-           (value < ende && value >= 0 && ende < start) ||
+           (value < ende && ende < start) ||
            (value > start && value < ende);
 }
 
