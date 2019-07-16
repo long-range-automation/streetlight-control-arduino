@@ -3,7 +3,6 @@
 #include "debug.h"
 #include "message.h"
 #include "gps.h"
-#include "streetlight-control.h"
 
 s_configuration global_config = {
     .relayModes = 0,

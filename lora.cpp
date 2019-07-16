@@ -1,10 +1,10 @@
-#include <Arduino.h>
 #include <lmic.h>
 #include <hal/hal.h>
 #include "message.h"
 #include "debug.h"
 #include "relay.h"
 #include "lora.h"
+#include "streetlight-control.h"
 
 // This EUI must be in little-endian format, so least-significant-byte
 // first. When copying an EUI from ttnctl output, this means to reverse
@@ -60,7 +60,7 @@ void lora_send(osjob_t *j)
         return;
     }
 
-    checkAutomation();
+    checkAutomation(&global_config);
 
     uint8_t heartbeatData[HEARTBEAT_LENGTH];
 

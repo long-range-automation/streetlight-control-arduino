@@ -3,15 +3,15 @@
 typedef struct
 {
     int year;
-    byte month;
-    byte day;
+    uint8_t month;
+    uint8_t day;
 } s_date;
 
 typedef struct
 {
-    byte hour;
-    byte minute;
-    byte second;
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second;
 } s_time;
 #endif
 

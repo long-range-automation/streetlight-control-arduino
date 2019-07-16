@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <stdint.h>
 #include "gps.h"
 #include "relay.h"
 #include "lora.h"

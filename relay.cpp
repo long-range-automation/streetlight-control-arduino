@@ -50,7 +50,7 @@ bool isInRange(uint8_t start, uint8_t ende, uint8_t value)
            (value > start && value < ende);
 }
 
-void checkAutomation()
+void checkAutomation(s_configuration *config)
 {
     s_time time;
 
@@ -61,22 +61,22 @@ void checkAutomation()
     uint8_t timeByte = timeToByte(time);
     bool isInOnRange = false;
 
-    if (global_config.timeOn != global_config.timeOff)
+    if (config->timeOn != config->timeOff)
     {
-        if (global_config.outageOn != global_config.outageOff)
+        if (config->outageOn != config->outageOff)
         {
-            isInOnRange = isInRange(global_config.timeOn, global_config.outageOn, timeByte) ||
-                          isInRange(global_config.outageOff, global_config.timeOff, timeByte);
+            isInOnRange = isInRange(config->timeOn, config->outageOn, timeByte) ||
+                          isInRange(config->outageOff, config->timeOff, timeByte);
         }
         else
         {
-            isInOnRange = isInRange(global_config.timeOn, global_config.timeOff, timeByte);
+            isInOnRange = isInRange(config->timeOn, config->timeOff, timeByte);
         }
     }
 
     for (short i = 0; i < 4; i++)
     {
-        if (getRelayMode(global_config.relayModes, i) != RELAY_MODE_AUTO)
+        if (getRelayMode(config->relayModes, i) != RELAY_MODE_AUTO)
         {
             continue;
         }
