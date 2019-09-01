@@ -67,7 +67,7 @@ void lora_send(osjob_t *j)
 
     packHeartbeatMessage(heartbeatData);
 
-#ifdef DEBUG
+#ifdef SC_DEBUG
     Serial.print(F("Payload Uplink: "));
     for (int i = 0; i < sizeof(heartbeatData); i++)
     {

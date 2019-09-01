@@ -28,13 +28,13 @@ bool _get_fallback_time(s_time *time) {
     time->minute = (latestGPSTime.minute + (diff / 60)) % 60;
     time->second = (latestGPSTime.second + diff) % 60;
 
-#ifdef DEBUG
+#ifdef SC_DEBUG
     Serial.print("FALLBACK HOUR=");
-    Serial.print(date->hour);
+    Serial.print(time->hour);
     Serial.print(" MINUTE=");
-    Serial.print(date->minute);
+    Serial.print(time->minute);
     Serial.print(" SECOND=");
-    Serial.println(date->second);
+    Serial.println(time->second);
 #endif
 
     return true;

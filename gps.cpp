@@ -50,7 +50,7 @@ bool gps_read_time(s_time *time)
 
     gps.crack_datetime(&year, &month, &day, &time->hour, &time->minute, &time->second, &hundredths, &age);
 
-#ifdef DEBUG
+#ifdef SC_DEBUG
     Serial.print("HOUR=");
     Serial.print(time->hour);
     Serial.print(" MINUTE=");
@@ -72,7 +72,7 @@ bool gps_read_coords(s_coords *coords)
 
     gps.f_get_position(&flat, &flon, &age);
 
-#ifdef DEBUG
+#ifdef SC_DEBUG
     Serial.print("LAT=");
     Serial.print(flat);
     Serial.print(" LON=");

@@ -1,7 +1,7 @@
 #include "debug.h"
 
 void debug_setup() {
-    Serial.begin(DEBUG_BAUD_RATE);
+    Serial.begin(SC_DEBUG_BAUD_RATE);
 
     while (!Serial);
 }
