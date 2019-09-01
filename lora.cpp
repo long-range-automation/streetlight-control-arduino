@@ -84,23 +84,15 @@ void lora_send(osjob_t *j)
 
 void onIncomingData(int length, uint8_t *data)
 {
-  Serial.print(F("Payload downlink 2: "));
-  for (int i = 0; i < length; i++)
-  {
-    Serial.print(data[i], HEX);
-    Serial.print(F(" "));
-  };
-  LOG_MSG("");
-
   uint8_t protocolVersion = data[0] >> 4;
   uint8_t messageType = data[0] & 0xff;
 
   //TODO check message length
 
-  Serial.print(F("VERSION="));
-  Serial.print(protocolVersion);
-  Serial.print(F(" TYPE="));
-  Serial.println(messageType);
+  LOG("VERSION=");
+  LOG(protocolVersion);
+  LOG(" TYPE=");
+  LOG_LN(messageType);
 
   switch (messageType)
   {
@@ -142,6 +134,19 @@ void onEvent(ev_t ev)
         LOG_MSG("EV_TXCOMPLETE (includes waiting for RX windows)");
         onTXComplete();
         break;
+    case EV_JOINED:
+        LOG_MSG("EV_JOINED");
+
+        network_ready();
+
+        // Disable link check validation (automatically enabled
+        // during join, but not supported by TTN at this time).
+        // LMIC_setLinkCheckMode(0);
+        break;
+    case EV_JOINING:
+        LOG_MSG("EV_JOINING");
+        break;
+#ifdef SC_DEBUG
     case EV_SCAN_TIMEOUT:
         LOG_MSG("EV_SCAN_TIMEOUT");
         break;
@@ -154,16 +159,6 @@ void onEvent(ev_t ev)
     case EV_BEACON_TRACKED:
         LOG_MSG("EV_BEACON_TRACKED");
         break;
-    case EV_JOINING:
-        LOG_MSG("EV_JOINING");
-        break;
-    case EV_JOINED:
-        LOG_MSG("EV_JOINED");
-
-        // Disable link check validation (automatically enabled
-        // during join, but not supported by TTN at this time).
-        LMIC_setLinkCheckMode(0);
-        break;
     case EV_RFU1:
         LOG_MSG("EV_RFU1");
         break;
@@ -172,6 +167,9 @@ void onEvent(ev_t ev)
         break;
     case EV_REJOIN_FAILED:
         LOG_MSG("EV_REJOIN_FAILED");
+        break;
+    case EV_JOIN_TXCOMPLETE:
+        LOG_MSG("EV_JOIN_TXCOMPLETE");
         break;
     case EV_LOST_TSYNC:
         LOG_MSG("EV_LOST_TSYNC");
@@ -189,8 +187,13 @@ void onEvent(ev_t ev)
     case EV_LINK_ALIVE:
         LOG_MSG("EV_LINK_ALIVE");
         break;
+    case EV_TXSTART:
+        LOG_MSG("EV_TXSTART");
+        break;
     default:
-        LOG_MSG("Unknown event");
+        LOG_MSG("Unknown event: ");
+        LOG((unsigned) ev);
+#endif
     }
 }
 
