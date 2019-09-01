@@ -1,0 +1,5 @@
+{
+    "sketch": "streetlight-control-arduino.ino",
+    "board": "arduino:avr:mega",
+    "configuration": "cpu=atmega2560"
+}

@@ -4,14 +4,18 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/klaus/Downloads/arduino-1.8.9/**",
-                "/home/klaus/Arduino/**"
+                "/home/klaus/Arduino/**",
+                "/home/klaus/Downloads/arduino-1.8.9/tools/**",
+                "/home/klaus/Downloads/arduino-1.8.9/hardware/arduino/avr/**"
             ],
             "defines": ["ARDUINO=100", "USBCON"],
+            "forcedInclude": [
+                "/home/klaus/Downloads/arduino-1.8.9/hardware/arduino/avr/cores/arduino/Arduino.h"
+            ],
+            "intelliSenseMode": "gcc-x64",
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "clang-x64"
+            "cppStandard": "c++17"
         }
     ],
     "version": 4
