@@ -10,6 +10,7 @@ void relay_setup()
 {
     for (unsigned int i = 0; i < (sizeof(RELAY_PINS) / sizeof(int)); i++)
     {
+        switchRelayOff(i);
         pinMode(RELAY_PINS[i], OUTPUT);
     }
 }
@@ -18,19 +19,19 @@ void switchRelayOff(int index)
 {
     LOG_MSG("Switch relay OFF");
 
-    digitalWrite(RELAY_PINS[index], LOW);
+    digitalWrite(RELAY_PINS[index], RELAY_OFF);
 }
 
 void switchRelayOn(int index)
 {
     LOG_MSG("Switch relay ON");
 
-    digitalWrite(RELAY_PINS[index], HIGH);
+    digitalWrite(RELAY_PINS[index], RELAY_ON);
 }
 
-int getRelayState(int index)
+bool isRelayOn(int index)
 {
-    return digitalRead(RELAY_PINS[index]);
+    return digitalRead(RELAY_PINS[index]) == RELAY_ON ? 0x1 : 0x0;
 }
 
 uint8_t getRelayMode(uint8_t modes, short number)

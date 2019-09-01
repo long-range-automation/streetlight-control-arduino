@@ -15,7 +15,7 @@ bool packHeartbeatMessage(uint8_t *data)
 
     int maintenanceMode = 0;
     int gpsSignal = hasGPSSignal ? 1 << 6 : 0;
-    int relayStates = getRelayState(0) + (getRelayState(1) << 1) + (getRelayState(2) << 2) + (getRelayState(3) << 3);
+    int relayStates = isRelayOn(0) + (isRelayOn(1) << 1) + (isRelayOn(2) << 2) + (isRelayOn(3) << 3);
 
     data[0] = (PROTOCOL_VERSION << 4) + HEARTBEAT_TYPE;
     data[1] = global_config.timeOn ^ global_config.timeOff ^ global_config.outageOn ^ global_config.outageOff; // checksum
