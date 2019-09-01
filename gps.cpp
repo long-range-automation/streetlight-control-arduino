@@ -1,24 +1,22 @@
 #include <Arduino.h>
 #include <TinyGPS.h>
-#include <SoftwareSerial.h>
 #include "datetime.h"
 #include "gps.h"
 
 TinyGPS gps;
-SoftwareSerial gpsSerial(4, 3); // Arduino RX, TX to conenct GPS
 
 void gps_setup()
 {
-    gpsSerial.begin(9600);
+    GPS_SERIAL.begin(9600);
 }
 
 bool _read_from_serial()
 {
     for (unsigned long start = millis(); millis() - start < 1000;)
     {
-        while (gpsSerial.available())
+        while (GPS_SERIAL.available())
         {
-            char c = gpsSerial.read();
+            char c = GPS_SERIAL.read();
             // Serial.write(c); // uncomment this line if you want to see the GPS data flowing
             if (gps.encode(c)) // Did a new valid sentence come in?
                 return true;
@@ -98,9 +96,9 @@ void gps_delay(unsigned long ms)
 
     do
     {
-        while (gpsSerial.available())
+        while (GPS_SERIAL.available())
         {
-            gps.encode(gpsSerial.read());
+            gps.encode(GPS_SERIAL.read());
         }
     } while (millis() - start < ms);
 }
@@ -114,9 +112,9 @@ void gps_debug_loop()
     // For one second we parse GPS data and report some key values
     for (unsigned long start = millis(); millis() - start < 1000;)
     {
-        while (gpsSerial.available())
+        while (GPS_SERIAL.available())
         {
-            char c = gpsSerial.read();
+            char c = GPS_SERIAL.read();
             // Serial.write(c); // uncomment this line if you want to see the GPS data flowing
             if (gps.encode(c)) // Did a new valid sentence come in?
                 newData = true;

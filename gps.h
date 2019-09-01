@@ -1,5 +1,7 @@
 #include "datetime.h"
 
+#define GPS_SERIAL Serial1
+
 typedef struct
 {
     float longitude;
