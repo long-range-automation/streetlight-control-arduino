@@ -24,12 +24,14 @@ bool packHeartbeatMessage(uint8_t *data)
     data[4] = (TX_INTERVAL / 60);
     data[5] = maintenanceMode + gpsSignal + relayStates;
     data[6] = global_config.relayModes;
+
+    return true;
 }
 
 void packGPSCoordinates(float latitude, float longitude, uint8_t *data)
 {
-    int32_t lat = (latitude, 6) * 10000; //save six decimal places
-    int32_t lon = (longitude, 6) * 10000;
+    int32_t lat = latitude * 1000000; //save six decimal places
+    int32_t lon = longitude * 1000000;
 
     data[0] = lat >> 16;
     data[1] = lat >> 8;
