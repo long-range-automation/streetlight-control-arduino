@@ -16,12 +16,13 @@ bool isInRange(uint8_t start, uint8_t ende, uint8_t value)
            (value > start && value < ende);
 }
 
-void checkAutomation(s_configuration *config)
+bool checkAutomation(s_configuration *config)
 {
+    bool relayModeChanged = false;
     s_time time;
 
     if (!time_get(&time)) {
-        return;
+        return relayModeChanged;
     }
 
     uint8_t timeByte = timeToByte(time);
@@ -47,13 +48,19 @@ void checkAutomation(s_configuration *config)
             continue;
         }
 
-        if (isInOnRange)
+        if (isInOnRange && !isRelayOn(i))
         {
             switchRelayOn(i);
+
+            relayModeChanged = true;
         }
-        else
+        else if (!isInOnRange && isRelayOn(i))
         {
             switchRelayOff(i);
+
+            relayModeChanged = true;
         }
     }
+
+    return relayModeChanged;
 }

@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "message.h"
 #include "gps.h"
+#include "automation.h"
 
 s_configuration global_config = {
     .relayModes = 0,
@@ -11,6 +12,8 @@ s_configuration global_config = {
     .outageOn = 0xff,
     .outageOff = 0xff,
 };
+
+unsigned long lastAutomationRun = millis();
 
 void setup()
 {
@@ -27,5 +30,19 @@ void setup()
 
 void loop()
 {
+  if (millis() - lastAutomationRun > 5000)
+  {
+    lastAutomationRun = millis();
+
+    LOG_MSG("Check automation");
+
+    if (checkAutomation(&global_config))
+    {
+      lora_send_immediately();
+    }
+  }
+
   lora_once();
+
+  //@TODO check time since last message exchange (in case tx message was not received, there will be no scheduled job)
 }

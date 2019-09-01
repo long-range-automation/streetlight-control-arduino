@@ -58,10 +58,10 @@ void lora_send(osjob_t *j)
 {
     if (isJobRunning())
     {
+        LOG_MSG("Job is running...");
+
         return;
     }
-
-    checkAutomation(&global_config);
 
     uint8_t heartbeatData[HEARTBEAT_LENGTH];
 
@@ -192,6 +192,15 @@ void onEvent(ev_t ev)
     default:
         LOG_MSG("Unknown event");
     }
+}
+
+void lora_send_immediately()
+{
+    LOG_MSG("Send immediately");
+
+    os_clearCallback(&sendjob);
+
+    os_setCallback(&sendjob, lora_send);
 }
 
 void lora_start()
