@@ -70,7 +70,7 @@ void lora_send(osjob_t *j)
 
 #ifdef SC_DEBUG
     Serial.print(F("Payload Uplink: "));
-    for (int i = 0; i < sizeof(heartbeatData); i++)
+    for (unsigned int i = 0; i < sizeof(heartbeatData); i++)
     {
         Serial.print(heartbeatData[i], HEX);
         Serial.print(F(" "));
@@ -86,9 +86,14 @@ void lora_send(osjob_t *j)
 void onIncomingData(int length, uint8_t *data)
 {
   uint8_t protocolVersion = data[0] >> 4;
-  uint8_t messageType = data[0] & 0xff;
 
-  //TODO check message length
+  if (protocolVersion != 0x0)
+  {
+      LOG_MSG("Unsupported protocol version");
+      return;
+  }
+
+  uint8_t messageType = data[0] & 0xff;
 
   LOG("VERSION=");
   LOG(protocolVersion);
@@ -98,6 +103,12 @@ void onIncomingData(int length, uint8_t *data)
   switch (messageType)
   {
     case CONFIGURATION_TYPE:
+      if (length != 6)
+      {
+          LOG_MSG("Message length does not fit configuration message");
+          return;
+      }
+
       LOG_MSG("Incoming configuration message");
 
       processConfigurationMessage(&data[1]);
@@ -120,7 +131,7 @@ void onTXComplete()
     {
         onIncomingData(LMIC.dataLen, LMIC.frame + LMIC.dataBeg);
 
-        delayInSeconds = 5;
+        delayInSeconds = 6;
     }
 
     // Schedule next transmission
@@ -138,11 +149,7 @@ void onEvent(ev_t ev)
     case EV_JOINED:
         LOG_MSG("EV_JOINED");
 
-        network_ready();
-
-        // Disable link check validation (automatically enabled
-        // during join, but not supported by TTN at this time).
-        // LMIC_setLinkCheckMode(0);
+        LMIC_setLinkCheckMode(0);
         break;
     case EV_JOINING:
         LOG_MSG("EV_JOINING");
