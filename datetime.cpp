@@ -14,14 +14,7 @@ bool _get_fallback_time(s_time *time) {
         return false;
     }
 
-    if (currentMillis < latestMillis) {
-        //overflow occurred
-
-        diff = (sizeof(unsigned long) + currentMillis) - latestMillis; // optimize
-    } else {
-        diff = currentMillis - latestMillis;
-    }
-
+    diff = currentMillis - latestMillis;
     diff /= 1000;
 
     time->hour = (latestGPSTime.hour + (diff / 60 / 60)) % 24;
