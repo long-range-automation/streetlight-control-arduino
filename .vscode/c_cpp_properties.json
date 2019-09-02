@@ -8,7 +8,7 @@
                 "/home/klaus/Downloads/arduino-1.8.9/tools/**",
                 "/home/klaus/Downloads/arduino-1.8.9/hardware/arduino/avr/**"
             ],
-            "defines": ["ARDUINO=100", "USBCON"],
+            "defines": ["ARDUINO=189", "USBCON"],
             "forcedInclude": [
                 "/home/klaus/Downloads/arduino-1.8.9/hardware/arduino/avr/cores/arduino/Arduino.h"
             ],
