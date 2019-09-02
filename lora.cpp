@@ -6,18 +6,19 @@
 #include "lora.h"
 #include "automation.h"
 #include "streetlight-control.h"
+#include "config/local.h"
 
 // This EUI must be in little-endian format, so least-significant-byte
 // first. When copying an EUI from ttnctl output, this means to reverse
 // the bytes. For TTN issued EUIs the last bytes should be 0xD5, 0xB3,
 // 0x70.
-static const u1_t PROGMEM APPEUI[8] = {0xB0, 0xD3, 0x01, 0xD0, 0x7E, 0xD5, 0xB3, 0x70};
-static const u1_t PROGMEM DEVEUI[8] = {0xE8, 0x94, 0x66, 0xCD, 0x81, 0x7F, 0x52, 0x00};
+static const u1_t PROGMEM APPEUI[8] = __APPEUI;
+static const u1_t PROGMEM DEVEUI[8] = __DEVEUI;
 
 // This key should be in big endian format (or, since it is not really a
 // number but a block of memory, endianness does not really apply). In
 // practice, a key taken from ttnctl can be copied as-is.
-static const u1_t PROGMEM APPKEY[16] = {0x26, 0x49, 0x42, 0xBF, 0x56, 0xFB, 0x9C, 0x6E, 0x12, 0xF1, 0xE3, 0xA1, 0x7F, 0x86, 0xA3, 0x2C};
+static const u1_t PROGMEM APPKEY[16] = __APPKEY;
 
 void os_getArtEui(u1_t *buf)
 {
