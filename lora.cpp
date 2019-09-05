@@ -169,6 +169,8 @@ void onEvent(ev_t ev)
         LOG_MSG("EV_JOINED");
 
         LMIC_setLinkCheckMode(0);
+
+        lora_send(&sendjob);
         break;
     case EV_JOINING:
         LOG_MSG("EV_JOINING");
@@ -237,7 +239,10 @@ void lora_start()
 
     LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100);
 
-    lora_send(&sendjob);
+    if (!LMIC_startJoining())
+    {
+        lora_send(&sendjob);
+    }
 }
 
 void lora_once()
