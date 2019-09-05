@@ -14,6 +14,7 @@ s_configuration global_config = {
 };
 
 unsigned long lastAutomationRun = millis();
+bool automationEnabled = false;
 
 void setup()
 {
@@ -30,7 +31,7 @@ void setup()
 
 void loop()
 {
-  if (millis() - lastAutomationRun > 5000)
+  if (automationEnabled && millis() - lastAutomationRun > 5000)
   {
     lastAutomationRun = millis();
 

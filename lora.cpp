@@ -78,6 +78,7 @@ void lora_send(osjob_t *j)
     LOG_MSG("");
 #endif
 
+    automationEnabled = false;
 
     int result = LMIC_setTxData2(LORA_PORT, heartbeatData, sizeof(heartbeatData), LORA_NO_CONFIRMATION);
 
@@ -121,6 +122,8 @@ void onIncomingData(int length, uint8_t *data)
       LOG_MSG("Incoming configuration message");
 
       processConfigurationMessage(&data[1]);
+
+      checkAutomation(&global_config);
       break;
     default:
       LOG_MSG("Invalid message type received");
@@ -151,9 +154,16 @@ void onEvent(ev_t ev)
 {
     switch (ev)
     {
+    case EV_TXSTART:
+        LOG_MSG("EV_TXSTART");
+
+        automationEnabled = false;
+        break;
     case EV_TXCOMPLETE:
         LOG_MSG("EV_TXCOMPLETE (includes waiting for RX windows)");
         onTXComplete();
+
+        automationEnabled = true;
         break;
     case EV_JOINED:
         LOG_MSG("EV_JOINED");
@@ -203,9 +213,6 @@ void onEvent(ev_t ev)
         break;
     case EV_LINK_ALIVE:
         LOG_MSG("EV_LINK_ALIVE");
-        break;
-    case EV_TXSTART:
-        LOG_MSG("EV_TXSTART");
         break;
     default:
         LOG_MSG("Unknown event: ");
