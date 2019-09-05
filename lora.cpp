@@ -78,9 +78,18 @@ void lora_send(osjob_t *j)
     LOG_MSG("");
 #endif
 
-    LMIC_setTxData2(LORA_PORT, heartbeatData, sizeof(heartbeatData), LORA_NO_CONFIRMATION);
 
-    LOG_MSG("Packet queued");
+    int result = LMIC_setTxData2(LORA_PORT, heartbeatData, sizeof(heartbeatData), LORA_NO_CONFIRMATION);
+
+    if (result == 0)
+    {
+        LOG_MSG("Packet queued");
+    }
+    else
+    {
+        LOG_MSG("Packet not queued");
+    }
+
 }
 
 void onIncomingData(int length, uint8_t *data)
