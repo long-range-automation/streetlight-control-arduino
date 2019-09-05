@@ -31,7 +31,10 @@ bool gps_read_date(s_date *date)
     unsigned long age;
     byte hour, minute, second, hundredth;
 
-    _read_from_serial();
+    if (!_read_from_serial())
+    {
+        return false;
+    }
 
     gps.crack_datetime(&date->year, &date->month, &date->day, &hour, &minute, &second, &hundredth, &age);
 
@@ -44,7 +47,10 @@ bool gps_read_time(s_time *time)
     int year;
     byte month, day, hundredths;
 
-    _read_from_serial();
+    if (!_read_from_serial())
+    {
+        return false;
+    }
 
     gps.crack_datetime(&year, &month, &day, &time->hour, &time->minute, &time->second, &hundredths, &age);
 
