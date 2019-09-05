@@ -168,6 +168,7 @@ void onEvent(ev_t ev)
     case EV_JOINED:
         LOG_MSG("EV_JOINED");
 
+        LMIC_setAdrMode(0);
         LMIC_setLinkCheckMode(0);
 
         lora_send(&sendjob);
