@@ -238,7 +238,7 @@ void lora_start()
     os_init();
     LMIC_reset();
 
-    LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100);
+    LMIC_setClockError(MAX_CLOCK_ERROR * 0.4 / 100);
 
     if (!LMIC_startJoining())
     {
