@@ -4,6 +4,7 @@
 #include "message.h"
 #include "gps.h"
 #include "automation.h"
+#include "config/local.h"
 
 s_configuration global_config = {
     .relayModes = 0,
@@ -20,7 +21,9 @@ void setup()
 {
   debug_setup();
 
-  LOG_MSG("Starting... [otaa-gps-device]");
+  LOG("Starting... ");
+  LOG(__NAME);
+  LOG_MSG("");
 
   pinMode(MAINTENANCE_PIN, INPUT_PULLUP);
 
