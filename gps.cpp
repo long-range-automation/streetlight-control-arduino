@@ -78,7 +78,10 @@ bool gps_read_coords(s_coords *coords)
     float flat, flon;
     unsigned long age;
 
-    _read_from_serial();
+    if (!_read_from_serial())
+    {
+        return false;
+    }
 
     gps.f_get_position(&flat, &flon, &age);
 
