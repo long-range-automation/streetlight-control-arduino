@@ -2,6 +2,7 @@
 #include <TinyGPS.h>
 #include "datetime.h"
 #include "gps.h"
+#include "debug.h"
 
 TinyGPS gps;
 
@@ -18,10 +19,15 @@ bool _read_from_serial()
         {
             char c = GPS_SERIAL.read();
             // Serial.write(c); // uncomment this line if you want to see the GPS data flowing
-            if (gps.encode(c)) // Did a new valid sentence come in?
+            if (gps.encode(c)) { // Did a new valid sentence come in?
+                turnLedOn(STATUS_LED_GPS);
+
                 return true;
+            }
         }
     }
+
+    turnLedOff(STATUS_LED_GPS);
 
     return false;
 }

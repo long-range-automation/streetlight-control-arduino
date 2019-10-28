@@ -174,16 +174,23 @@ void onEvent(ev_t ev)
     case EV_TXSTART:
         LOG_MSG("EV_TXSTART");
 
+        turnLedOn(STATUS_LED_TX);
+
         automationEnabled = false;
         break;
     case EV_TXCOMPLETE:
         LOG_MSG("EV_TXCOMPLETE (includes waiting for RX windows)");
+
+        turnLedOff(STATUS_LED_TX);
+
         onTXComplete();
 
         automationEnabled = true;
         break;
     case EV_JOINED:
         LOG_MSG("EV_JOINED");
+
+        turnLedOn(STATUS_LED_JOINED);
 
         LMIC_setAdrMode(0);
         LMIC_setLinkCheckMode(0);
@@ -192,6 +199,18 @@ void onEvent(ev_t ev)
         break;
     case EV_JOINING:
         LOG_MSG("EV_JOINING");
+        break;
+    case EV_JOIN_TXCOMPLETE:
+        LOG_MSG("EV_JOIN_TXCOMPLETE");
+
+        turnLedOff(STATUS_LED_TX);
+
+        break;
+    case EV_REJOIN_FAILED:
+        LOG_MSG("EV_REJOIN_FAILED");
+
+        turnLedOff(STATUS_LED_JOINED);
+
         break;
 #ifdef SC_DEBUG
     case EV_SCAN_TIMEOUT:
@@ -211,12 +230,6 @@ void onEvent(ev_t ev)
         break;
     case EV_JOIN_FAILED:
         LOG_MSG("EV_JOIN_FAILED");
-        break;
-    case EV_REJOIN_FAILED:
-        LOG_MSG("EV_REJOIN_FAILED");
-        break;
-    case EV_JOIN_TXCOMPLETE:
-        LOG_MSG("EV_JOIN_TXCOMPLETE");
         break;
     case EV_LOST_TSYNC:
         LOG_MSG("EV_LOST_TSYNC");
