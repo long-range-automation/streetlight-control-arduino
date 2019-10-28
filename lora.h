@@ -1,4 +1,5 @@
 #define TX_INTERVAL 120
+#define TX_INTERVAL_LOCATION 43200 // 12h
 
 #define LORA_PORT 1
 

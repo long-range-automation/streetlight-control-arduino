@@ -1,8 +1,10 @@
 #define PROTOCOL_VERSION 0
 
+#define LOCATION_TYPE 0
 #define HEARTBEAT_TYPE 1
 #define CONFIGURATION_TYPE 2
 
+#define LOCATION_LENGTH 8
 #define HEARTBEAT_LENGTH 7
 #define CONFIGURATION_LENGTH 6
 
@@ -19,6 +21,6 @@ typedef struct
 #endif
 
 bool packHeartbeatMessage(uint8_t *data);
-void packGPSCoordinates(float latitude, float longitude, uint8_t *data);
+bool packLocationMessage(uint8_t *data);
 
 void processConfigurationMessage(uint8_t *data);

@@ -28,10 +28,11 @@ bool packHeartbeatMessage(uint8_t *data)
     return true;
 }
 
-void packGPSCoordinates(float latitude, float longitude, uint8_t *data)
+static void packGPSCoordinates(float latitude, float longitude, uint8_t *data)
 {
-    int32_t lat = latitude * 1000000; //save six decimal places
-    int32_t lon = longitude * 1000000;
+    //use 10m accuracy and make sure value is positive
+    uint32_t lat = (latitude + 180) * 10000;
+    uint32_t lon = (longitude + 180) * 10000;
 
     data[0] = lat >> 16;
     data[1] = lat >> 8;
@@ -41,7 +42,27 @@ void packGPSCoordinates(float latitude, float longitude, uint8_t *data)
     data[5] = lon;
 }
 
-void updateRelays(uint8_t modes)
+bool packLocationMessage(uint8_t *data) {
+    s_coords coords;
+    bool hasGPSSignal = gps_read_coords(&coords);
+
+    data[0] = (PROTOCOL_VERSION << 4) + LOCATION_TYPE;
+    data[1] = (TX_INTERVAL / 60);
+
+    if (hasGPSSignal) {
+        packGPSCoordinates(coords.latitude, coords.longitude, data + 2);
+
+        return true;
+    }
+
+    for(int i = 0; i < 6; i++) {
+        data[2 + i] = 0xff;
+    }
+
+    return false;
+}
+
+static void updateRelays(uint8_t modes)
 {
     for (short i = 0; i < 4; i++)
     {
@@ -58,7 +79,7 @@ void updateRelays(uint8_t modes)
     }
 }
 
-void unpackConfigurationMessage(uint8_t *data, s_configuration *config)
+static void unpackConfigurationMessage(uint8_t *data, s_configuration *config)
 {
     config->relayModes = data[0];
     config->timeOn = data[1];

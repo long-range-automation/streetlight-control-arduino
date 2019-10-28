@@ -1,5 +1,6 @@
 #include <lmic.h>
 #include <hal/hal.h>
+#include <limits.h>
 #include "message.h"
 #include "debug.h"
 #include "relay.h"
@@ -35,6 +36,8 @@ void os_getDevKey(u1_t *buf)
     memcpy_P(buf, APPKEY, 16);
 }
 
+unsigned long lastLocationTXMillis = 0;
+
 static osjob_t sendjob;
 
 // Pin mapping
@@ -64,15 +67,29 @@ void lora_send(osjob_t *j)
         return;
     }
 
-    uint8_t heartbeatData[HEARTBEAT_LENGTH];
+    uint8_t data[LOCATION_LENGTH];
+    int dataLength = 0;
 
-    packHeartbeatMessage(heartbeatData);
+    if ((!lastLocationTXMillis ||
+        ((millis() - lastLocationTXMillis) % ULONG_MAX) > (TX_INTERVAL_LOCATION * 1000)) &&
+        packLocationMessage(data)) {
+        lastLocationTXMillis = millis() || (millis() + 1);
+        dataLength = LOCATION_LENGTH;
+
+        LOG_MSG("Location message packed");
+    } else {
+        dataLength = HEARTBEAT_LENGTH;
+
+        packHeartbeatMessage(data);
+
+        LOG_MSG("Heartbeat message packed");
+    }
 
 #ifdef SC_DEBUG
     Serial.print(F("Payload Uplink: "));
-    for (unsigned int i = 0; i < sizeof(heartbeatData); i++)
+    for (unsigned int i = 0; i < sizeof(data); i++)
     {
-        Serial.print(heartbeatData[i], HEX);
+        Serial.print(data[i], HEX);
         Serial.print(F(" "));
     };
     LOG_MSG("");
@@ -80,7 +97,7 @@ void lora_send(osjob_t *j)
 
     automationEnabled = false;
 
-    int result = LMIC_setTxData2(LORA_PORT, heartbeatData, sizeof(heartbeatData), LORA_NO_CONFIRMATION);
+    int result = LMIC_setTxData2(LORA_PORT, data, dataLength, LORA_NO_CONFIRMATION);
 
     if (result == 0)
     {
