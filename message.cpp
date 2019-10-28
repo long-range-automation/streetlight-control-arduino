@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <stdint.h>
 #include "gps.h"
 #include "relay.h"
@@ -13,7 +14,7 @@ bool packHeartbeatMessage(uint8_t *data)
     bool hasGPSSignal = gps_read_coords(&coords);
     bool hasValidTime = time_get(&time);
 
-    int maintenanceMode = 0;
+    int maintenanceMode = (digitalRead(MAINTENANCE_PIN) == LOW) << 7;
     int gpsSignal = hasGPSSignal ? 1 << 6 : 0;
     int relayStates = isRelayOn(0) + (isRelayOn(1) << 1) + (isRelayOn(2) << 2) + (isRelayOn(3) << 3);
 

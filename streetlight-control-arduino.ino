@@ -22,6 +22,8 @@ void setup()
 
   LOG_MSG("Starting... [otaa-gps-device]");
 
+  pinMode(MAINTENANCE_PIN, INPUT_PULLUP);
+
   gps_setup();
 
   relay_setup();
