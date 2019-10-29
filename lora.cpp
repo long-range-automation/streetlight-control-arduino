@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include "arduino.h"
 #include <lmic.h>
 #include <hal/hal.h>
 #include <limits.h>

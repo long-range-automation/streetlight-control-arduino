@@ -7,4 +7,5 @@
     #define LOW 0
 
     int digitalRead(uint8_t);
+    unsigned long millis();
 #endif
