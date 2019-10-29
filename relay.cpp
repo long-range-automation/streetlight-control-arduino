@@ -33,8 +33,3 @@ bool isRelayOn(int index)
 {
     return digitalRead(RELAY_PINS[index]) == RELAY_ON ? 0x1 : 0x0;
 }
-
-uint8_t getRelayMode(uint8_t modes, short number)
-{
-    return (modes >> (2 * number)) & 0x3;
-}

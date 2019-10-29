@@ -43,7 +43,7 @@ bool checkAutomation(s_configuration *config)
 
     for (short i = 0; i < 4; i++)
     {
-        if (getRelayMode(config->relayModes, i) != RELAY_MODE_AUTO)
+        if (RELAY_MODE(config->relayModes, i) != RELAY_MODE_AUTO)
         {
             continue;
         }

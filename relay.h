@@ -12,8 +12,9 @@
 #define RELAY_ON LOW
 #define RELAY_OFF HIGH
 
+#define RELAY_MODE(VALUE, INDEX) (((VALUE) >> (2 * (INDEX))) & 0x3)
+
 void relay_setup();
 void switchRelayOff(int index);
 void switchRelayOn(int index);
 bool isRelayOn(int index);
-uint8_t getRelayMode(uint8_t modes, short number);

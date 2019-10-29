@@ -66,7 +66,7 @@ static void updateRelays(uint8_t modes)
 {
     for (short i = 0; i < 4; i++)
     {
-        uint8_t mode = getRelayMode(modes, i);
+        uint8_t mode = RELAY_MODE(modes, i);
 
         if (mode == RELAY_MODE_OFF)
         {
