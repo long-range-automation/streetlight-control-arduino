@@ -1,3 +1,4 @@
 .vscode/ipch/
 /build-*
 /config/local.h
+/config/
