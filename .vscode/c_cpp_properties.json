@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**",
                 "/home/klaus/Arduino/**",
                 "/home/klaus/Downloads/arduino-1.8.9/tools/**",
-                "/home/klaus/Downloads/arduino-1.8.9/hardware/arduino/avr/**"
+                "/home/klaus/Downloads/arduino-1.8.9/hardware/arduino/avr/**",
+                "/home/klaus/Downloads/arduino-1.8.9/hardware/tools/avr/avr/include"
             ],
             "defines": ["ARDUINO=189", "USBCON"],
             "forcedInclude": [
