@@ -1,8 +1,4 @@
-#include <Arduino.h>
-
-#define LOG(message) Serial.print(message)
-#define LOG_LN(message) Serial.println(message)
-#define LOG_MSG(message) Serial.println(F(message))
+#define LOG_MSG(f, ...) printf(f, ## __VA_ARGS__)
 
 #define SC_DEBUG_BAUD_RATE 9600
 

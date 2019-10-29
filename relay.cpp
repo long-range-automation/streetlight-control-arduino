@@ -17,14 +17,14 @@ void relay_setup()
 
 void switchRelayOff(int index)
 {
-    LOG_MSG("Switch relay OFF");
+    LOG_MSG("Switch relay OFF\n");
 
     digitalWrite(RELAY_PINS[index], RELAY_OFF);
 }
 
 void switchRelayOn(int index)
 {
-    LOG_MSG("Switch relay ON");
+    LOG_MSG("Switch relay ON\n");
 
     digitalWrite(RELAY_PINS[index], RELAY_ON);
 }

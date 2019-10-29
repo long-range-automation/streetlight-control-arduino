@@ -21,9 +21,7 @@ void setup()
 {
   debug_setup();
 
-  LOG("Starting... ");
-  LOG(__NAME);
-  LOG_MSG("");
+  LOG_MSG("Starting... [%s]\n", __NAME);
 
   pinMode(MAINTENANCE_PIN, INPUT_PULLUP);
 
@@ -40,7 +38,7 @@ void loop()
   {
     lastAutomationRun = millis();
 
-    LOG_MSG("Check automation");
+    LOG_MSG("Check automation\n");
 
     if (checkAutomation(&global_config))
     {
